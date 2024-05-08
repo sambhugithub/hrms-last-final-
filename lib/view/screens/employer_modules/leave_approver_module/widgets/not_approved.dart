@@ -1,0 +1,175 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hrms/helper/color.dart';
+import 'package:hrms/localizations/app_localizations.dart';
+import 'package:hrms/view/widgets/asset_image_fetch.dart';
+import 'package:hrms/view/widgets/loader.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../../provider/organization_providers/leave_approver/leave_approver_provider.dart';
+
+
+
+class NotApproved extends StatefulWidget {
+  const NotApproved({super.key});
+
+  @override
+  State<NotApproved> createState() => _NotApprovedState();
+}
+
+class _NotApprovedState extends State<NotApproved> {
+
+  apiCall()async{
+    WidgetsBinding.instance.addPostFrameCallback((_)async{
+      await context.read<LeaveApproverProvider>().setProjectStatus('Not Approved');
+      await context.read<LeaveApproverProvider>().getOrganizationLeaveApproverList(context);
+    });
+  }
+
+  @override
+  void initState() {
+    apiCall();
+    // TODO: implement initState
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return
+      Consumer<LeaveApproverProvider>(
+        builder: (_,instance,child){
+          return instance.isLoading?Loader(containerColor: appscaffoldcolor1,):
+              instance.notApprovedLeaveListData!.data!.isEmpty?
+                  Container(
+                    child: Center(
+                      child: Text('${Translation.of(context)!.translate('no_data')}'),
+                    ),
+                  ):
+          Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: ListView.builder(
+              itemCount: instance.notApprovedLeaveListData!.data!.length,
+              itemBuilder: (context,index){
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 4),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,borderRadius: BorderRadius.circular(5)
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    height: 60.h,
+                                    width: 60.h,
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey.shade300,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(color: Colors.grey)
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(0.0),
+                                      child: Center(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                          child: Image(
+                                            image: AssetImage(const AssetImages(imgName: 'user_no_image').getAssetImagePath()),
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10.w,),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(instance.notApprovedLeaveListData!.data![index].employeeName.toString().toUpperCase(),style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.w600),),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 8.r,
+                                                backgroundColor: Colors.grey,
+                                              ),
+                                              Container(
+                                                height: 15.h,
+                                                width: 2.w,
+                                                color: Colors.grey,
+                                              ),
+                                              CircleAvatar(
+                                                radius: 8.r,
+                                                backgroundColor: Colors.grey,
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(width: 10.w,),
+
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              Text(instance.notApprovedLeaveListData!.data![index].fromDate.toString(),style: TextStyle(color: Colors.grey,fontSize: 16.sp),),
+                                              SizedBox(height: 5.h,),
+                                              Text(instance.notApprovedLeaveListData!.data![index].toDate.toString(),style: TextStyle(color: Colors.grey,fontSize: 16.sp)),
+                                            ],
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: appcolor2,
+                                        borderRadius: BorderRadius.circular(20.r)
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+                                      child: Center(
+                                        child: Text(instance.notApprovedLeaveListData!.data![index].leaveTypeName.toString(),style: TextStyle(color: Colors.white,fontSize: 18.sp,fontWeight: FontWeight.w600),),
+                                      ),
+                                    ),
+                                  ),
+
+                                  Text('${instance.notApprovedLeaveListData!.data![index].noOfLeave.toString()} Days Off',style: TextStyle(color: appcolor2),),
+                                  Text(instance.notApprovedLeaveListData!.data![index].status.toString(),style: TextStyle(color:Colors.red,fontSize: 16.sp),)
+                                ],
+                              )
+                            ],
+                          ),
+                          SizedBox(height: 5.h,),
+
+                          Text(instance.notApprovedLeaveListData!.data![index].statusRemarks.toString(),textAlign: TextAlign.justify,
+                            style: TextStyle(fontSize: 16.sp),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      );
+  }
+}

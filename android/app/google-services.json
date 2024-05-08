@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "230087379134",
+    "project_id": "hrms-40ea3",
+    "storage_bucket": "hrms-40ea3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:230087379134:android:7b5ee6d83dc359ad5676ef",
+        "android_client_info": {
+          "package_name": "com.eitpl.hrms"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmC40gFn8ODtq0jPMinzPOa2AEs5rhvd0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
